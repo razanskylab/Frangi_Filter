@@ -1,6 +1,6 @@
 function Update_Frangi_Scales(FF)
   FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', 'Updating Frangi scales...');
-
+  
   if strcmp(FF.GUI.ScalesDropDown.Value, 'manual')
     FF.useScales = str2double(strsplit(FF.GUI.ScalesTextField.Value));
   else

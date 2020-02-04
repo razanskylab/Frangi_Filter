@@ -21,13 +21,15 @@ classdef Frangi_Filter < handle
     startScale double {mustBeNumeric, mustBeFinite} = 5;
     stopScale double {mustBeNumeric, mustBeFinite} = 500;
     nScales double {mustBeNumeric, mustBeFinite} = 6;
+    useScales; % these scales are used for the actual filtering, can be manually
+    % entered or automatically
 
     % sensitivity used for matlab filtering
-    sensitivity single {mustBeNumeric, mustBeFinite} = 0.05;
+    sensitivity double {mustBeNumeric, mustBeFinite} = 0.05;
 
     % betaOne and Two used for older filtering
-    betaOne = 2; % seems to have little impact for fixed betaTwo
-    betaTwo = 0.11; % smaller values = more "vessels"
+    betaOne double {mustBeNumeric, mustBeFinite} = 2; % seems to have little impact for fixed betaTwo
+    betaTwo double {mustBeNumeric, mustBeFinite} = 0.11; % smaller values = more "vessels"
 
     showScales {mustBeNumericOrLogical} = false;
     invert {mustBeNumericOrLogical} = false;
@@ -50,8 +52,7 @@ classdef Frangi_Filter < handle
     dR; % average x-y pixels size
 
     autoScales; % when not manually selected, we calculate the autoScales
-    useScales; % these scales are used for the actual filtering, can be manually
-    % entered or automatically
+
     allEffectiveScales;
   end
 
@@ -125,6 +126,14 @@ classdef Frangi_Filter < handle
 
     end
 
+    function delete(FF)
+
+      if ~isempty(FF.GUI)
+        delete(FF.GUI); % make sure potentially invisible app gets closed
+      end
+
+    end
+
     % convenience function for plotting
     function P(FF, varargin)
       FF.Plot(varargin{:});
@@ -132,7 +141,13 @@ classdef Frangi_Filter < handle
 
     % Open GUI and hand over this class
     function Open_GUI(FF)
-      FrangiGui(FF);
+
+      if isempty(FF.GUI)
+        FrangiGui(FF);
+      else
+        figure(FF.GUI.UIFigure); % make visible and bring to front...
+      end
+
     end
 
   end

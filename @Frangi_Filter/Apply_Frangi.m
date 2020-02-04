@@ -21,7 +21,7 @@ function Apply_Frangi(FF, unFilt)
 
     if strcmp(FF.GUI.UnitsDropDown.Value, 'physical')
       % convert to pixel (rounding done later in for loop)
-      sigmas = sigmas ./ FF.dR;
+      sigmas = sigmas ./ (FF.dR*1e3);
     end
 
     nSigmas = length(sigmas);
