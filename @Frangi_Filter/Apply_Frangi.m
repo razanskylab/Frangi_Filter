@@ -1,18 +1,20 @@
 function Apply_Frangi(FF, unFilt)
 
-  % check if we actually have data to work with
-  if nargin == 1
-    unFilt = FF.raw;
-  end
-
-  if isempty(unFilt)
-    return;
-  end
-
   try
-    unFilt = normalize(unFilt);
-    FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', 'Frangi Filtering ');
+    
+    % check if we actually have data to work with
+    if nargin == 1
+      unFilt = FF.raw;
+    end
+    
+    if isempty(unFilt)
+      return;
+    end
 
+    % check if app is acutally open / visible
+    FF.Update_ProgBar('Frangi Filtering:',0);
+
+    unFilt = normalize(unFilt);
     sensitivity = FF.GUI.SensitivityEditField.Value;
     inverted = ~FF.GUI.InvertedCheckBox.Value;
 
@@ -21,7 +23,7 @@ function Apply_Frangi(FF, unFilt)
 
     if strcmp(FF.GUI.UnitsDropDown.Value, 'physical')
       % convert to pixel (rounding done later in for loop)
-      sigmas = sigmas ./ (FF.dR*1e3);
+      sigmas = sigmas ./ (FF.dR * 1e3);
     end
 
     nSigmas = length(sigmas);
@@ -31,9 +33,8 @@ function Apply_Frangi(FF, unFilt)
     FF.filtScales = zeros([size(unFilt) nSigmas], 'like', unFilt); % fitlered scales
 
     for iScale = 1:nSigmas
-      FF.ProgBar.Value = iScale ./ nSigmas; % update progress bar
-      FF.ProgBar.Message = sprintf('Filtering scale %i/%i...', iScale, nSigmas);
-      % iSigma = sigmas(iScale);
+      progMessage = sprintf('Filtering scale %i/%i...', iScale, nSigmas);
+      FF.Update_ProgBar(progMessage, iScale ./ nSigmas);
       iSigma = sigmas(iScale) / 6; % FIXME why the 6 here???
       iFilt = imgaussfilt(unFilt, iSigma, 'FilterSize', 2 * ceil(3 * iSigma) + 1);
       iFilt = builtin("_fibermetricmex", iFilt, sensitivity, inverted, iSigma);
@@ -43,11 +44,14 @@ function Apply_Frangi(FF, unFilt)
     % combine frangi filtered and original image
     FF.Update_Frangi_Combo();
 
-    % plot scale,  etc...
-    FF.Plot_Frangi();
+    if ~FF.isBackground
+      % plot scale,  etc...
+      FF.Plot_Frangi();
+    end
 
+    FF.ProgBar = [];
   catch me
-    close(FF.ProgBar);
+    FF.ProgBar = [];
     rethrow(me);
   end
 

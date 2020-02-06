@@ -1,5 +1,6 @@
 function Update_Frangi_Scales(FF)
-  FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', 'Updating Frangi scales...');
+  % FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', 'Updating Frangi scales...');
+  % updating very fast, no need to put progress bar for that...
   
   if strcmp(FF.GUI.ScalesDropDown.Value, 'manual')
     FF.useScales = str2double(strsplit(FF.GUI.ScalesTextField.Value));
@@ -26,6 +27,6 @@ function Update_Frangi_Scales(FF)
   tdata = table(FF.useScales', true(FF.nScales, 1));
   FF.GUI.ScaleTable.Data = tdata;
 
-  close(FF.ProgBar);
+  % close(FF.ProgBar);
 
 end

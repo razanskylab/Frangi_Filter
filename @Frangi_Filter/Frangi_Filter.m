@@ -46,7 +46,7 @@ classdef Frangi_Filter < handle
     ProgBar;
   end
 
-  properties (SetAccess = private)
+  properties (Dependent = true)
     % step sizes, calculated automatically from x,y,z using get methods, can't be set!
     dX; dY;
     dR; % average x-y pixels size
@@ -54,6 +54,8 @@ classdef Frangi_Filter < handle
     autoScales; % when not manually selected, we calculate the autoScales
 
     allEffectiveScales;
+
+    isBackground; % checks if GUI exists but is invisible -> we run in background
   end
 
   properties (Hidden = true)
@@ -150,6 +152,33 @@ classdef Frangi_Filter < handle
 
     end
 
+    % Open GUI and hand over this class
+    function Update_ProgBar(FF, message, value)
+      % if we get a value, we don't have an Indeterminate
+      intermediate = (nargin < 3);
+
+      if intermediate
+
+        if isempty(FF.ProgBar) &&~FF.isBackground
+          FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', message, ...
+            'Indeterminate', 'on');
+        elseif ~isempty(FF.ProgBar) &&~FF.isBackground
+          FF.ProgBar.Message = message;
+        end
+
+      else
+
+        if isempty(FF.ProgBar) &&~FF.isBackground
+          FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', message);
+        elseif ~isempty(FF.ProgBar) &&~FF.isBackground
+          FF.ProgBar.Message = message;
+          FF.ProgBar.Value = value;
+        end
+
+      end
+
+    end
+
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -242,6 +271,12 @@ classdef Frangi_Filter < handle
     function allEffectiveScales = get.allEffectiveScales(F)
       pixelDensity = 1 / F.dR * 1e3;
       allEffectiveScales = F.autoScales .* pixelDensity * 1e-5;
+    end
+
+    % check if GUI runs in background -> we use the settings from there
+    % but we don't plot etc...super cool!
+    function isBackground = get.isBackground(FF)
+      isBackground = ~isempty(FF.GUI) && strcmp(FF.GUI.UIFigure.Visible, 'off');
     end
 
     function set.filt(F, map)

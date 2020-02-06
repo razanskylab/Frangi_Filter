@@ -1,8 +1,7 @@
 function Update_Frangi_Combo(FF)
   % FF.Update_Frangi_Combo() Combine selected frangi scales and apply to image
-  %
 
-  FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', 'Fusing Frangi and Raw');
+  FF.Update_ProgBar('Fusing Frangi and Raw');
 
   % Needs already calculated FF.filtScales, then used the max-amp projection
   % of those to form frangi filtered image...
@@ -23,7 +22,7 @@ function Update_Frangi_Combo(FF)
     FF.fusedFrangi = [];
   end
 
-  % TODO  
+  % TODO
   % implement non-linear comb using:
   % fitModel = '1/(1+exp(b*(c-x)))'; % b = spread, c = x0, x = frangi value
 
@@ -39,7 +38,7 @@ function Update_Frangi_Combo(FF)
   %   % or we use the image itself...
   % end
 
-  close(FF.ProgBar);
+  FF.ProgBar = [];
 
 
 end
