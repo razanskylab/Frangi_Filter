@@ -186,6 +186,17 @@ classdef Frangi_Filter < handle
   methods
 
     % get position vectos, always return as double! ----------------------------
+    function set.raw(FF, raw)
+      FF.raw = raw;
+      % enable or disable apply frangi button if gui exists
+      if ~isempty(FF.GUI)%#ok<*MCSUP>
+        FF.GUI.ApplyFrangiFilterButton.Enable = ~isempty(raw);
+        FF.GUI.FuseFrangiInputButton.Enable = ~isempty(raw);
+      end
+
+    end
+
+    % get position vectos, always return as double! ----------------------------
     function x = get.x(F)
 
       if ~isempty(F.x)
