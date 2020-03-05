@@ -18,8 +18,8 @@ classdef Frangi_Filter < handle
 
     % frangi filtering options ---------------------------------------------------
     % frangi scales in micrometer
-    startScale double {mustBeNumeric, mustBeFinite} = 5;
-    stopScale double {mustBeNumeric, mustBeFinite} = 500;
+    startScale double {mustBeNumeric, mustBeFinite} = 2;
+    stopScale double {mustBeNumeric, mustBeFinite} = 50;
     nScales double {mustBeNumeric, mustBeFinite} = 6;
     useScales; % these scales are used for the actual filtering, can be manually
     % entered or automatically
