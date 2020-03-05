@@ -73,13 +73,8 @@ function Update_Frangi_Combo(FF)
         % fitModel = '1/(1+exp(b*(c-x)))'; % b = spread, c = x0, x = frangi value
       case 'Image Guided Filter'
         % filters baseIM using the guided filter, guided by guideIm
-        if FF.GUI.FlipCheckBox.Value
-          baseIM = FF.filt;
-          guideIm = FF.raw;
-        else % non-flipped
-          baseIM = FF.raw;
-          guideIm = FF.filt;
-        end
+        baseIM = FF.raw;
+        guideIm = FF.filt;
 
         IMF.filt = baseIM;
         IMF.imGuideNhoodSize = FF.GUI.nbhEditField.Value;
