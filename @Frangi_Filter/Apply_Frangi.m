@@ -10,6 +10,11 @@ function Apply_Frangi(FF, unFilt)
     if isempty(unFilt)
       return;
     end
+    
+    if isempty(FF.FigHandles) ||~ishandle(FF.FigHandles.MainFig)
+      FF.Setup_Frangi_Figure();
+    end
+
 
     % check if we contrast adjust the individual scales...
     doClahe = FF.GUI.CLAHEScalesCheckBox.Value; % clahe each scale?
