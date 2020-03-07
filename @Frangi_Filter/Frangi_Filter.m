@@ -44,6 +44,7 @@ classdef Frangi_Filter < handle
   properties
     GUI; % handle to optional GUI (FF.Open_GUI);
     ProgBar;
+    FigHandles = [];
   end
 
   properties (Dependent = true)

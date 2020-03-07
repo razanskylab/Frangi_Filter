@@ -11,31 +11,26 @@ function Plot_Frangi(FF, scaleOnly, selectedScale)
     end
 
     if ~scaleOnly
-
       if ~isempty(FF.raw)
-        plotAx = FF.GUI.imFrangiFiltIn.Children(1);
-        set(plotAx, 'cdata', FF.raw);
+        set(FF.FigHandles.InIm, 'cdata', FF.raw);
       end
 
       if ~isempty(FF.filtScales)
-        plotAx = FF.GUI.imFrangiScale.Children(1);
-        set(plotAx, 'cdata', squeeze(FF.filtScales(:, :, selectedScale)));
+        set(FF.FigHandles.ScaleIm, 'cdata', squeeze(FF.filtScales(:, :, selectedScale)));
       end
 
       if ~isempty(FF.filt)
-        plotAx = FF.GUI.imFrangiFilt.Children(1);
-        set(plotAx, 'cdata', FF.filt);
+        set(FF.FigHandles.FrangiIm, 'cdata', FF.filt);
       end
 
       if ~isempty(FF.fusedFrangi)
-        plotAx = FF.GUI.imFrangiFused.Children(1);
-        set(plotAx, 'cdata', FF.fusedFrangi);
+        set(FF.FigHandles.CombiIm, 'cdata', FF.fusedFrangi);
       end
 
     else
 
       if ~isempty(FF.filtScales)
-        plotAx = FF.GUI.imFrangiScale.Children(1);
+        plotAx = FF.FigHandles.ScaleIm;
         set(plotAx, 'cdata', squeeze(FF.filtScales(:, :, selectedScale)));
       end
 

@@ -92,8 +92,7 @@ function Update_Frangi_Combo(FF)
     end
 
     if ~isempty(FF.fusedFrangi)
-      plotAx = FF.GUI.imFrangiFused.Children(1);
-      set(plotAx, 'cdata', FF.fusedFrangi);
+      set(FF.FigHandles.CombiIm, 'cdata', FF.fusedFrangi);
     end
 
     drawnow();
