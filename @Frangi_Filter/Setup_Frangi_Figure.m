@@ -11,13 +11,14 @@ function Setup_Frangi_Figure(FF)
   FigHandles.TileLayout = tiledlayout(2, 2);
   FigHandles.TileLayout.Padding = 'compact'; % remove uneccesary white space...
 
-  % user can't close the window manually, needs to close the GUI
-  FigHandles.MainFig.CloseRequestFcn = [];
+  % close the app if user closes either the app or the processing window
+  FigHandles.MainFig.UserData = FF.GUI; % need that in Gui_Close_Request callback
+  FigHandles.MainFig.CloseRequestFcn = @Gui_Close_Request;
 
   emptyImage = nan(size(FF.raw));
 
   FigHandles.InPlot = nexttile;
-  FigHandles.InIm = imagesc(emptyImage);
+  FigHandles.InIm = imagesc(FF.y,FF.x,emptyImage);
   axis image;
   axis tight;
   axis off; % no need for axis labels in these plots
@@ -25,7 +26,7 @@ function Setup_Frangi_Figure(FF)
   title('Frangi Input');
 
   FigHandles.ScalePlot = nexttile;
-  FigHandles.ScaleIm = imagesc(emptyImage);
+  FigHandles.ScaleIm = imagesc(FF.y,FF.x,emptyImage);
   axis image;
   axis tight;
   axis off; % no need for axis labels in these plots
@@ -33,7 +34,7 @@ function Setup_Frangi_Figure(FF)
   title('Frangi Scale');
 
   FigHandles.FrangiPlot = nexttile;
-  FigHandles.FrangiIm = imagesc(emptyImage);
+  FigHandles.FrangiIm = imagesc(FF.y,FF.x,emptyImage);
   axis image;
   axis tight;
   axis off; % no need for axis labels in these plots
@@ -41,7 +42,7 @@ function Setup_Frangi_Figure(FF)
   title('Frangi Filtered Image');
 
   FigHandles.CombiPlot = nexttile;
-  FigHandles.CombiIm = imagesc(emptyImage);
+  FigHandles.CombiIm = imagesc(FF.y,FF.x,emptyImage);
   axis image;
   axis tight;
   axis off; % no need for axis labels in these plots
