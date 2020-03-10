@@ -13,6 +13,9 @@ function Apply_Frangi(FF, unFilt)
     
     if isempty(FF.FigHandles) ||~ishandle(FF.FigHandles.MainFig)
       FF.Setup_Frangi_Figure();
+    else 
+      figure(FF.FigHandles.MainFig); % bring figure to foreground
+      figure(FF.GUI.UIFigure); % bring figure to foreground
     end
 
 
