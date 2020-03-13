@@ -49,7 +49,7 @@ function Setup_Frangi_Figure(FF)
   axis(FH.CombiPlot, 'tight');
   axis(FH.CombiPlot, 'off');
   colormap(FH.CombiPlot, FH.cbar);
-  title(FH.CombiPlot, 'Cleaned Binarized Image');
+  title(FH.CombiPlot, 'Final Image');
 
 
   linkaxes([FH.InPlot, ...

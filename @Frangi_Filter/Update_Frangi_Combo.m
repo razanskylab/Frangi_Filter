@@ -72,12 +72,12 @@ function Update_Frangi_Combo(FF)
       case 'Non-Linear Combination'
         spread = FF.GUI.spreadEditField.Value;
         shift = FF.GUI.cutoffEditField.Value;
-        FF.filt = log_fun(FF.filt, 1, spread, shift);
-        FF.filt = normalize(FF.filt);
+        logFilt = log_fun(FF.filt, 1, spread, shift);
+        logFilt = normalize(logFilt);
         if strcmp(FF.GUI.LinCombDropDown.Value, 'sum')
-          FF.fusedFrangi = FF.raw .* rawFactor + FF.filt .* frangiFactor;
+          FF.fusedFrangi = FF.raw .* rawFactor + logFilt .* frangiFactor;
         elseif strcmp(FF.GUI.LinCombDropDown.Value, 'prod')
-          FF.fusedFrangi = FF.raw .* FF.filt;
+          FF.fusedFrangi = FF.raw .* logFilt;
         end
       case 'Image Guided Filter'
         % filters baseIM using the guided filter, guided by guideIm
