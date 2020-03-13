@@ -159,25 +159,20 @@ classdef Frangi_Filter < handle
       intermediate = (nargin < 3);
 
       if intermediate
-
         if isempty(FF.ProgBar) &&~FF.isBackground
           FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', message, ...
             'Indeterminate', 'on');
         elseif ~isempty(FF.ProgBar) &&~FF.isBackground
           FF.ProgBar.Message = message;
         end
-
       else
-
         if isempty(FF.ProgBar) &&~FF.isBackground
           FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', message);
         elseif ~isempty(FF.ProgBar) &&~FF.isBackground
           FF.ProgBar.Message = message;
           FF.ProgBar.Value = value;
         end
-
       end
-
     end
 
   end

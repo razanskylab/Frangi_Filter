@@ -1,59 +1,61 @@
 function Setup_Frangi_Figure(FF)
 
+  FH.cbar = gray(256);
+
   % setup UI axis for images
-  fHandle = figure('Name', 'Frangi Processing', 'NumberTitle', 'off');
+  fHandle = figure('Name', 'Figure: Vesselness', 'NumberTitle', 'off');
   % make figure fill half the screen
   set(fHandle, 'Units', 'Normalized', 'OuterPosition', [0 0 0.5 1]);
   % move figure over a little to the right of the vessel GUI
   fHandle.Units = 'pixels';
   fHandle.OuterPosition(1) = FF.GUI.UIFigure.Position(1) + FF.GUI.UIFigure.Position(3);
-  FigHandles.MainFig = fHandle; 
-  FigHandles.TileLayout = tiledlayout(2, 2);
-  FigHandles.TileLayout.Padding = 'compact'; % remove uneccesary white space...
+  FH.MainFig = fHandle; 
+  FH.TileLayout = tiledlayout(2, 2);
+  FH.TileLayout.Padding = 'compact'; % remove uneccesary white space...
 
   % close the app if user closes either the app or the processing window
-  FigHandles.MainFig.UserData = FF.GUI; % need that in Gui_Close_Request callback
-  FigHandles.MainFig.CloseRequestFcn = @Gui_Close_Request;
+  FH.MainFig.UserData = FF.GUI; % need that in Gui_Close_Request callback
+  FH.MainFig.CloseRequestFcn = @Gui_Close_Request;
 
   emptyImage = nan(size(FF.raw));
 
-  FigHandles.InPlot = nexttile;
-  FigHandles.InIm = imagesc(FF.y,FF.x,emptyImage);
-  axis image;
-  axis tight;
-  axis off; % no need for axis labels in these plots
-  colormap('gray');
-  title('Frangi Input');
+  FH.InPlot = nexttile;
+  FH.InIm = imagesc(FF.y,FF.x,emptyImage);
+  axis(FH.InPlot,'image');
+  axis(FH.InPlot,'tight');
+  axis(FH.InPlot,'off');
+  colormap(FH.InPlot,FH.cbar);
+  title(FH.InPlot,'Frangi Input');
 
-  FigHandles.ScalePlot = nexttile;
-  FigHandles.ScaleIm = imagesc(FF.y,FF.x,emptyImage);
-  axis image;
-  axis tight;
-  axis off; % no need for axis labels in these plots
-  colormap('gray');
-  title('Frangi Scale');
+  FH.ScalePlot = nexttile;
+  FH.ScaleIm = imagesc(FH.ScalePlot,FF.y,FF.x,emptyImage);
+  axis(FH.ScalePlot, 'image');
+  axis(FH.ScalePlot, 'tight');
+  axis(FH.ScalePlot, 'off');
+  colormap(FH.ScalePlot, FH.cbar);
+  title(FH.ScalePlot,'Frangi Scale');
 
-  FigHandles.FrangiPlot = nexttile;
-  FigHandles.FrangiIm = imagesc(FF.y,FF.x,emptyImage);
-  axis image;
-  axis tight;
-  axis off; % no need for axis labels in these plots
-  colormap('gray');
-  title('Frangi Filtered Image');
+  FH.FrangiPlot = nexttile;
+  FH.FrangiIm = imagesc(FH.FrangiPlot,FF.y, FF.x, emptyImage);
+  axis(FH.FrangiPlot, 'image');
+  axis(FH.FrangiPlot, 'tight');
+  axis(FH.FrangiPlot, 'off');
+  colormap(FH.FrangiPlot, FH.cbar);
+  title(FH.FrangiPlot, 'Frangi Filtered Image');
 
-  FigHandles.CombiPlot = nexttile;
-  FigHandles.CombiIm = imagesc(FF.y,FF.x,emptyImage);
-  axis image;
-  axis tight;
-  axis off; % no need for axis labels in these plots
-  colormap('gray');
-  title('Cleaned Binarized Image');
+  FH.CombiPlot = nexttile;
+  FH.CombiIm = imagesc(FH.CombiPlot,FF.y, FF.x, emptyImage);
+  axis(FH.CombiPlot, 'image');
+  axis(FH.CombiPlot, 'tight');
+  axis(FH.CombiPlot, 'off');
+  colormap(FH.CombiPlot, FH.cbar);
+  title(FH.CombiPlot, 'Cleaned Binarized Image');
 
 
-  linkaxes([FigHandles.InPlot, ...
-            FigHandles.ScalePlot, ...
-            FigHandles.FrangiPlot, ...
-            FigHandles.CombiPlot ...
+  linkaxes([FH.InPlot, ...
+            FH.ScalePlot, ...
+            FH.FrangiPlot, ...
+            FH.CombiPlot ...
             ], 'xy');
-  FF.FigHandles = FigHandles;
+  FF.FigHandles = FH;
 end
