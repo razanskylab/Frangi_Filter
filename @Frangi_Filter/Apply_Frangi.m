@@ -39,10 +39,15 @@ function Apply_Frangi(FF, unFilt)
     FF.Update_ProgBar('Frangi Filtering:', 0);
 
     unFilt = normalize(unFilt);
-    sensitivity = FF.GUI.SensitivityEditField.Value;
     inverted = ~FF.GUI.InvertedCheckBox.Value;
+    sensitivity = FF.GUI.SensitivityEditField.Value; 
+
+    % convert sensitivity from 0 = high and 1 = low 
+    % Gui limits 0.001 <-> 0.2
+    sensitivity = (1-sensitivity).*0.3 + 0.0001; % make sure it's never 0
 
     % useScales in micrometer / pixels
+    FF.Update_Frangi_Scales();
     sigmas = sort(FF.useScales);
 
     if strcmp(FF.GUI.UnitsDropDown.Value, 'physical')

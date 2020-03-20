@@ -27,6 +27,4 @@ function Update_Frangi_Scales(FF)
   tdata = table(FF.useScales', true(FF.nScales, 1));
   FF.GUI.ScaleTable.Data = tdata;
 
-  % close(FF.ProgBar);
-
 end
