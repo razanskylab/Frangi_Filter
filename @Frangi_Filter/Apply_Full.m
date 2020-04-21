@@ -22,6 +22,11 @@ function [filtIm] = Apply_Full(FF, unFilt)
     sigmas = double(sigmas);
     nSigmas = length(sigmas);
 
+    if FF.verboseOutput
+      fprintf('[Frangi] Frangi filtering (scales %i-%i)...',minmax(sigmas));
+      tic;
+    end
+
     % NOTE for the scale filtering, we only use default values, they work fine
     if FF.doClaheScales || FF.doContrastScales
       IMF = Image_Filter(); % init Image filter class
@@ -39,13 +44,7 @@ function [filtIm] = Apply_Full(FF, unFilt)
     FF.filtScales = zeros([size(unFilt) nSigmas], 'like', unFilt); % fitlered scales
 
     % Actual Frangi Filtering happening here... %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % start progress bar so we see some progress here
-    barText = sprintf('Filtering using %i scales', nSigmas);
-    progressbar(barText);
-
     for iScale = 1:nSigmas
-      progressbar(iScale ./ nSigmas);
-
       iSigma = sigmas(iScale) / 6; % FIXME why the 6 here???
 
       iFilt = imgaussfilt(unFilt, iSigma, 'FilterSize', 2 * ceil(3 * iSigma) + 1);
@@ -98,6 +97,10 @@ function [filtIm] = Apply_Full(FF, unFilt)
         FF.filt = normalize(FF.filt);
       end
 
+    end
+
+    if FF.verboseOutput
+      done(toc);
     end
 
     if FF.verbosePlotting

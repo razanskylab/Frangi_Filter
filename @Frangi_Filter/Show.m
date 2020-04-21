@@ -29,7 +29,7 @@ function [] = Show(F)
     imshow(montage);
     % don't create new figures for each scale, we have subplots for that
     % but we have to change the F.newFigPlotting settings as it's used in Overlay_Mask
-    titleStr = sprintf('Scale:%i (%2.0f Px)', iPlot, F.autoScales(iPlot));
+    titleStr = sprintf('Scale:%i (%2.0f Px)', iPlot, F.useScales(iPlot));
     title(titleStr);
   end
 
