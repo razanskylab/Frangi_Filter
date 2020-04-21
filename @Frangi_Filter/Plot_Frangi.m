@@ -1,5 +1,9 @@
 function Plot_Frangi(FF, scaleOnly, selectedScale)
 
+  if isempty(FF.FigHandles)
+    Setup_Frangi_Figure(FF);
+  end
+
   try
 
     if nargin == 1
@@ -11,6 +15,7 @@ function Plot_Frangi(FF, scaleOnly, selectedScale)
 
     if ~scaleOnly
       FF.Update_ProgBar('Updating plots');
+
       if ~isempty(FF.raw)
         set(FF.FigHandles.InIm, 'cdata', FF.raw);
       end

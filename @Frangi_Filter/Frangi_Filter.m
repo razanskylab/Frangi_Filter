@@ -26,18 +26,30 @@ classdef Frangi_Filter < handle
 
     % sensitivity used for matlab filtering
     sensitivity double {mustBeNumeric, mustBeFinite} = 0.05;
+    invert {mustBeNumericOrLogical} = false; % false if bright = data
 
-    % betaOne and Two used for older filtering
+    % advanced options of clahe & contrast adjustments to filtScales and filt
+    % NOTE only used in Apply_Full(), not when using the GUI
+    doClaheScales {mustBeNumericOrLogical} = false; % clahe on individual scales?
+    doPostClahe {mustBeNumericOrLogical} = false; % clahe on individual filt?
+    claheSensitivity {mustBeNumeric, mustBeFinite} = 0.02; % use this sensitivy
+
+    doContrastScales {mustBeNumericOrLogical} = true; % contrast on individual scales?
+    doPostContrast {mustBeNumericOrLogical} = false; % contrast on individual filt?
+    contrastGamma {mustBeNumeric, mustBeFinite} = 1.20; % use this gamma
+
+    % betaOne and Two used for older filtering ---------------------------------
+    % NOTE No longer in use as we use matlab frangi filter now...
     betaOne double {mustBeNumeric, mustBeFinite} = 2; % seems to have little impact for fixed betaTwo
     betaTwo double {mustBeNumeric, mustBeFinite} = 0.11; % smaller values = more "vessels"
 
     showScales {mustBeNumericOrLogical} = false;
-    invert {mustBeNumericOrLogical} = false;
 
     % output control
     colorMap = 'gray'; % use for simple plotting
     verboseOutput {mustBeNumericOrLogical} = false;
-    showHisto {mustBeNumericOrLogical} = false; % default don't show histo for xy-plots
+    verbosePlotting {mustBeNumericOrLogical} = true;
+    showHisto {mustBeNumericOrLogical} = false; % default don't show histo for xy - plots
   end
 
   % gui related properties
@@ -50,13 +62,13 @@ classdef Frangi_Filter < handle
   properties (Dependent = true)
     % step sizes, calculated automatically from x,y,z using get methods, can't be set!
     dX; dY;
-    dR; % average x-y pixels size
+    dR; % average x - y pixels size
 
     autoScales; % when not manually selected, we calculate the autoScales
 
     allEffectiveScales;
 
-    isBackground; % checks if GUI exists but is invisible -> we run in background
+    isBackground; % checks if GUI exists but is invisible - > we run in background
   end
 
   properties (Hidden = true)
@@ -145,10 +157,10 @@ classdef Frangi_Filter < handle
     % Open GUI and hand over this class
     function Open_GUI(FF)
 
-      if isempty(FF.GUI)
+      if isempty(FF.GUI) ||~ishandle(FF.GUI)
         FrangiGui(FF);
       else
-        figure(FF.GUI.UIFigure); % make visible and bring to front...
+        figure(FF.GUI.UIFigure); % make visible and bring to front ...
       end
 
     end
@@ -159,20 +171,25 @@ classdef Frangi_Filter < handle
       intermediate = (nargin < 3);
 
       if intermediate
+
         if isempty(FF.ProgBar) &&~FF.isBackground
           FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', message, ...
             'Indeterminate', 'on');
         elseif ~isempty(FF.ProgBar) &&~FF.isBackground
           FF.ProgBar.Message = message;
         end
+
       else
+
         if isempty(FF.ProgBar) &&~FF.isBackground
           FF.ProgBar = uiprogressdlg(FF.GUI.UIFigure, 'Title', message);
         elseif ~isempty(FF.ProgBar) &&~FF.isBackground
           FF.ProgBar.Message = message;
           FF.ProgBar.Value = value;
         end
+
       end
+
     end
 
   end
@@ -260,11 +277,22 @@ classdef Frangi_Filter < handle
           fprintf('\n'); % close line
           warnMessage = sprintf(...
             'Large difference in step size between x (%2.1fum) and y (%2.1fum)!', ...
-            F.dX * 1e3, F.dY * 1e3);
+          F.dX * 1e3, F.dY * 1e3);
           short_warn(warnMessage);
         end
 
         dR = stepSize;
+      end
+
+    end
+
+    % get all scales (these are transformed into effective scales below)
+    function useScales = get.useScales(F)
+
+      if isempty(F.useScales)
+        useScales = F.autoScales;
+      else
+        useScales = F.useScales;  
       end
 
     end
