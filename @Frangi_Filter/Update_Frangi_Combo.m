@@ -7,12 +7,12 @@ function Update_Frangi_Combo(FF)
   try
 
     if isempty(FF.raw) || isempty(FF.filt)
-      FF.fusedFrangi = []; % nothing to here really...
+      FF.fusedFrangi = []; % nothing to here really ...
       return;
     end
 
     FF.Update_ProgBar('Fusing Frangi and Raw');
-    IMF = Image_Filter(); % init Image filter class, we use it a lot here...
+    IMF = Image_Filter(); % init Image filter class, we use it a lot here ...
     % takes 0.05s to create, so rather get a "new one" every time...
 
     % calculate overall frangi filtered image by taking max of all scales...
@@ -45,11 +45,12 @@ function Update_Frangi_Combo(FF)
           IMF.Adjust_Contrast();
         end
 
-        FF.filt = IMF.filt; % transfer image data back...
+        FF.filt = IMF.filt; % transfer image data back ...
       end
+
     end
 
-    % we loose all quantitativeness when we combine frangi and raw, so 
+    % we loose all quantitativeness when we combine frangi and raw, so
     % we normalize here to make them easier to combine
     FF.filt = normalize(FF.filt);
     FF.raw = normalize(FF.raw);
@@ -69,16 +70,18 @@ function Update_Frangi_Combo(FF)
           FF.fusedFrangi = FF.raw .* FF.filt;
         end
 
-      case 'Non-Linear Combination'
+      case 'Non - Linear Combination'
         spread = FF.GUI.spreadEditField.Value;
         shift = FF.GUI.cutoffEditField.Value;
         logFilt = log_fun(FF.filt, 1, spread, shift);
         logFilt = normalize(logFilt);
+
         if strcmp(FF.GUI.LinCombDropDown.Value, 'sum')
           FF.fusedFrangi = FF.raw .* rawFactor + logFilt .* frangiFactor;
         elseif strcmp(FF.GUI.LinCombDropDown.Value, 'prod')
           FF.fusedFrangi = FF.raw .* logFilt;
         end
+
       case 'Image Guided Filter'
         % filters baseIM using the guided filter, guided by guideIm
         baseIM = FF.raw;
@@ -99,12 +102,14 @@ function Update_Frangi_Combo(FF)
         % threshold + potential gaussian filter...
     end
 
-    % post processing, i.e. work on the combined image
+    % post processing, i.e. work on the combined image -------------------------
     FF.fusedFrangi = normalize(FF.fusedFrangi);
     doPostClahe = FF.GUI.PostCLAHECheckBox.Value;
     doPostContrast = FF.GUI.PostContrastCheckBox.Value;
+
     if doPostClahe || doPostContrast
       IMF.filt = FF.fusedFrangi;
+
       if doPostClahe
         % setup solid default clahe settings
         IMF.claheNBins = 256;
@@ -120,13 +125,14 @@ function Update_Frangi_Combo(FF)
         IMF.imadGamme = FF.GUI.ContrastGamma.Value;
         IMF.Adjust_Contrast();
       end
+
       FF.fusedFrangi = IMF.filt;
     end
-
 
     if ~isempty(FF.fusedFrangi)
       set(FF.FigHandles.CombiIm, 'cdata', FF.fusedFrangi);
     end
+
     if ~isempty(FF.fusedFrangi)
       set(FF.FigHandles.FrangiIm, 'cdata', FF.filt);
     end
