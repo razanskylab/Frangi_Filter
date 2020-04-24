@@ -1,4 +1,26 @@
 function Apply_Frangi(FF, unFilt)
+  % applies Frangi filtering using the GUI
+
+  % make sure gui is running, if not, ask user what to do...
+  if isempty(FF.GUI) || (~isvalid(FF.GUI))
+    answer = questdlg('Apply_Frangi requires a running GUI window, which was not opened!', ...
+      'Dessert Menu', ...
+      'Open GUI', 'Run Without GUI', 'Cancel', 'Open GUI');
+    % Handle response
+    switch answer
+      case 'Open GUI'
+        FF.Open_GUI();
+      case 'Run Without GUI'
+        short_warn('You can just run .Apply() instead of .Apply_Frangi()!');
+        FF.Apply();
+        return;
+      case 'Cancel'
+        return;
+    end
+
+  else % GUI exist, make it visible
+    FF.GUI.UIFigure.Visible = 'on';
+  end
 
   try
 
@@ -10,14 +32,13 @@ function Apply_Frangi(FF, unFilt)
     if isempty(unFilt)
       return;
     end
-    
+
     if isempty(FF.FigHandles) ||~ishandle(FF.FigHandles.MainFig)
       FF.Setup_Frangi_Figure();
-    else 
+    else
       figure(FF.FigHandles.MainFig); % bring figure to foreground
       figure(FF.GUI.UIFigure); % bring figure to foreground
     end
-
 
     % check if we contrast adjust the individual scales...
     doClahe = FF.GUI.CLAHEScalesCheckBox.Value; % clahe each scale?
@@ -69,22 +90,26 @@ function Apply_Frangi(FF, unFilt)
       iFilt = builtin("_fibermetricmex", iFilt, sensitivity, inverted, iSigma);
       % iFilt can be all zeros depending on filter, then we don't adjust
       if any(iFilt(:))
+
         if doClahe
           IMF.filt = iFilt;
           iFilt = IMF.Apply_CLAHE();
         end
+
         if doContrast
           IMF.filt = iFilt;
           iFilt = IMF.Adjust_Contrast();
         end
+
         FF.filtScales(:, :, iScale) = iFilt;
       end
+
     end
-    
+
     % combine frangi filtered and original image
     FF.Update_Frangi_Combo();
 
-    if ~FF.isBackground 
+    if ~FF.isBackground
       % plot scale,  etc...
       FF.Plot_Frangi();
     end
