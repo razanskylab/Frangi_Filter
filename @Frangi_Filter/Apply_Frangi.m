@@ -87,7 +87,12 @@ function Apply_Frangi(FF, unFilt)
       FF.Update_ProgBar(progMessage, iScale ./ nSigmas);
       iSigma = sigmas(iScale) / 6; % FIXME why the 6 here???
       iFilt = imgaussfilt(unFilt, iSigma, 'FilterSize', 2 * ceil(3 * iSigma) + 1);
-      iFilt = builtin("_fibermetricmex", iFilt, sensitivity, inverted, iSigma);
+      % try new build in frangi, if that fails, try old one
+      try 
+        iFilt = images.internal.builtins.fibermetric(iFilt, sensitivity, inverted, iSigma);
+      catch
+        iFilt = builtin("_fibermetricmex", iFilt, sensitivity, inverted, iSigma);
+      end
       % iFilt can be all zeros depending on filter, then we don't adjust
       if any(iFilt(:))
 
